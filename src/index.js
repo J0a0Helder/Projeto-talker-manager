@@ -18,5 +18,7 @@ app.listen(PORT, () => {
 // ---------------------------------------------------------------- //
 
 const talkerRouter = require('./routes/talkerRouter');
+const loginRouter = require('./routes/loginRouter');
 
 app.use('/talker', talkerRouter);
+app.use('/login', loginRouter);
