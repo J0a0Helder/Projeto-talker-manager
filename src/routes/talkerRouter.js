@@ -54,4 +54,13 @@ talkerRouter.put('/:id', authMiddlware,
     res.status(200).send(result);
 });
 
+talkerRouter.delete('/:id', authMiddlware, async (req, res) => {
+    const talkers = await readFile(filePath);
+    const { id } = req.params;
+    const idNumber = Number(id); 
+    const talkersFiltred = talkers.filter((talker) => talker.id !== idNumber);
+    await writeFile(talkersFiltred, filePath);
+    res.status(204).send();
+});
+
 module.exports = talkerRouter;
