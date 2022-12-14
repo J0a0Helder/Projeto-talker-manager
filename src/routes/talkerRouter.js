@@ -39,4 +39,19 @@ talkerRouter.post('/', authMiddlware,
     res.status(201).send(result);
 });
 
+talkerRouter.put('/:id', authMiddlware,
+  nameValidation,
+  ageValidation,
+  talkValidation, wathValidation, rateValidation, async (req, res) => {
+    const talkers = await readFile(filePath);
+    const { name, age, talk } = req.body;
+    const { id } = req.params;
+    const idNumber = Number(id); 
+    const talkersFiltred = talkers.filter((talker) => talker.id !== idNumber);
+    const result = { id: idNumber, name, age, talk };
+    talkersFiltred.push(result);
+    await writeFile(talkersFiltred, filePath);
+    res.status(200).send(result);
+});
+
 module.exports = talkerRouter;
