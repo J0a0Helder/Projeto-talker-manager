@@ -12,4 +12,12 @@ talkerRouter.get('/', async (req, res) => {
   return res.status(200).send(talkers);
 });
 
+talkerRouter.get('/:id', async (req, res) => {
+  const talkers = await readFile(filePath);
+  const { id } = req.params;
+  const result = talkers.find((talker) => talker.id === Number(id));
+  if (!result) return res.status(404).json({ message: 'Pessoa palestrante não encontrada' });
+  return res.status(200).send(result);
+});
+
 module.exports = talkerRouter;
