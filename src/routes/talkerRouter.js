@@ -18,14 +18,6 @@ talkerRouter.get('/', async (req, res) => {
   return res.status(200).send(talkers);
 });
 
-talkerRouter.get('/:id', async (req, res) => {
-  const talkers = await readFile(filePath);
-  const { id } = req.params;
-  const result = talkers.find((talker) => talker.id === Number(id));
-  if (!result) return res.status(404).json({ message: 'Pessoa palestrante não encontrada' });
-  return res.status(200).send(result);
-});
-
 talkerRouter.post('/', authMiddlware,
   nameValidation,
   ageValidation,
@@ -37,6 +29,22 @@ talkerRouter.post('/', authMiddlware,
     talkers.push(result);
     await writeFile(talkers, filePath);
     res.status(201).send(result);
+});
+
+talkerRouter.get('/search', authMiddlware, async (req, res) => {
+  const filters = Object.values(req.query)[0].toLowerCase();
+  const talkers = await readFile(filePath);
+  if (filters === '') return res.status(200).send(talkers);
+  const talkersFiltered = talkers.filter((talker) => talker.name.toLowerCase().match(filters));
+  return res.status(200).send(talkersFiltered);
+});
+
+talkerRouter.get('/:id', async (req, res) => {
+  const talkers = await readFile(filePath);
+  const { id } = req.params;
+  const result = talkers.find((talker) => talker.id === Number(id));
+  if (!result) return res.status(404).json({ message: 'Pessoa palestrante não encontrada' });
+  return res.status(200).send(result);
 });
 
 talkerRouter.put('/:id', authMiddlware,
